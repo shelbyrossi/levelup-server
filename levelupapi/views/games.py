@@ -6,6 +6,7 @@ from rest_framework import serializers, status
 from levelupapi.models import Game
 from levelupapi.models.game_type import Game_Type
 from levelupapi.models.gamer import Gamer
+from django.core.exceptions import ValidationError
 
 
 
@@ -39,27 +40,20 @@ class GamesView(ViewSet):
 
         Returns:
             Response -- JSON serialized game instance
-        """
-        gamer = Gamer.objects.get(user=request.auth.user)
-        game_type = Game_Type.objects.get(pk=request.data["game_type"])
-
-        game = Game.objects.create(
-            title=request.data["title"],
-            maker=request.data["maker"],
-            number_of_players=request.data["number_of_players"],
-            skill_level=request.data["skill_level"],
-            gamer=gamer,
-            game_type=game_type
-        )
-        serializer = GameSerializer(game)
-        return Response(serializer.data)
-    
-    
-    
-class GameSerializer(serializers.ModelSerializer):
-    """JSON serializer for game types
     """
+        gamer = Gamer.objects.get(user=request.auth.user)
+        try:
+         serializer = CreateGameSerializer(data=request.data)
+         serializer.is_valid(raise_exception=True)
+         serializer.save(gamer=gamer)
+         return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except ValidationError as ex:
+         return Response({'message': ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+class CreateGameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
-        fields = ('id','title', 'maker', 'game_type', 'gamer', 'number_of_players', 'skill_level')
+        fields = ['id', 'title', 'maker', 'number_of_players', 'skill_level', 'game_type']
         depth = 2
