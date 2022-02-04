@@ -1,0 +1,29 @@
+[
+    {
+        "model": "levelupapi.game",
+        "pk": 1,
+        "fields": {
+            "game_type": 1,
+            "title": "Shoots and Ladders",
+            "maker": "Hasboro",
+            "gamer": 1,
+            "number_of_players": 2,
+            "skill_level": 4
+           
+            
+        }
+    },
+    {
+        "model": "levelupapi.game",
+        "pk": 2,
+        "fields": {
+            "game_type": 1,
+            "title": "CandyLand",
+            "maker": "Hasboro",
+            "gamer": 1,
+            "number_of_players": 4,
+            "skill_level": 2
+       
+        }
+    }
+]

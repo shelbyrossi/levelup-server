@@ -1,0 +1,26 @@
+[
+    {
+        "model": "levelupapi.event",
+        "pk": 1,
+        "fields": {
+            "description": "description 1",
+            "date": "2020-01-12",
+            "time": "1:50",
+            "game_id": 1,
+            "organizer_id": 1,
+            "attendees": [1]
+        }
+    },
+    {
+        "model": "levelupapi.event",
+        "pk": 1,
+        "fields": {
+            "description": "description 2",
+            "date": "2020-06-03",
+            "time": "9:00",
+            "game_id": 1,
+            "organizer_id": 1,
+            "attendees": [1]
+        }
+    }
+    ]
