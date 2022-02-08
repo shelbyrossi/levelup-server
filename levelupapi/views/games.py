@@ -21,7 +21,7 @@ class GamesView(ViewSet):
         """
         
         game = Game.objects.get(pk=pk)
-        serializer = GameSerializer(game)
+        serializer = CreateGameSerializer(game)
         return Response(serializer.data)
         
 
@@ -38,19 +38,52 @@ class GamesView(ViewSet):
     def create(self, request):
         """Handle POST operations
 
-        Returns:
-            Response -- JSON serialized game instance
-    """
+        Returns
+         Response -- JSON serialized game instance
+         """
         gamer = Gamer.objects.get(user=request.auth.user)
-        try:
-         serializer = CreateGameSerializer(data=request.data)
-         serializer.is_valid(raise_exception=True)
-         serializer.save(gamer=gamer)
-         return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except ValidationError as ex:
-         return Response({'message': ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+        game_type = Game_Type.objects.get(pk=request.data["game_type"])
+
+        game = Game.objects.create(
+            title=request.data["title"],
+             maker=request.data["maker"],
+             number_of_players=request.data["number_of_players"],
+             skill_level=request.data["skill_level"],
+             gamer=gamer,
+             game_type=game_type
+         )
+        serializer = CreateGameSerializer(game)
+        return Response(serializer.data)
+    
+    def update(self, request, pk):
+        """Handle PUT requests for a game
+
+        Returns:
+         Response -- Empty body with 204 status code
+    """
+
+        game = Game.objects.get(pk=pk)
+        game.title = request.data["title"]
+        game.maker = request.data["maker"]
+        game.number_of_players = request.data["number_of_players"]
+        game.skill_level = request.data["skill_level"]
+
+        game_type = Game_Type.objects.get(pk=request.data["game_type"])
+        game.game_type = game_type
+        game.save()
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
     
     
+    
+class GameSerializer(serializers.ModelSerializer):
+    """JSON serializer for game types
+    """
+    class Meta:
+        model = Game
+        fields = ('id', 'title', 'maker', 'number_of_players', 'skill_level', 'game_type') 
+   
     
 class CreateGameSerializer(serializers.ModelSerializer):
     class Meta:
