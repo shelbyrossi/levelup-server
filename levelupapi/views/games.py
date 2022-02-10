@@ -56,26 +56,23 @@ class GamesView(ViewSet):
         return Response(serializer.data)
     
     def update(self, request, pk):
-        """Handle PUT requests for a game
-
-        Returns:
-         Response -- Empty body with 204 status code
-    """
-
+        """PUT update"""
         game = Game.objects.get(pk=pk)
-        game.title = request.data["title"]
-        game.maker = request.data["maker"]
-        game.number_of_players = request.data["number_of_players"]
-        game.skill_level = request.data["skill_level"]
-
-        game_type = Game_Type.objects.get(pk=request.data["game_type"])
-        game.game_type = game_type
+        game.title = request.data['title']
+        game.maker = request.data['maker']
+        game.number_of_players = request.data['number_of_players']
+        game.skill_level = request.data['skill_level']
+        game.game_type = Game_Type.objects.get(pk=request.data['game_type'])
         game.save()
 
-        return Response(None, status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def destroy(self, request, pk):
+        """Delete game"""
+        game = Game.objects.get(pk=pk)
+        game.delete()
 
-    
-    
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 class GameSerializer(serializers.ModelSerializer):
     """JSON serializer for game types
