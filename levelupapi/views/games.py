@@ -20,9 +20,17 @@ class GamesView(ViewSet):
             Response -- JSON serialized game type
         """
         
-        game = Game.objects.get(pk=pk)
-        serializer = CreateGameSerializer(game)
-        return Response(serializer.data)
+        try:
+            game = Game.objects.get(pk=pk)
+            serializer = CreateGameSerializer(game)
+            return Response(serializer.data)
+        
+        except Game.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+    
+        
+        
+        
         
 
     def list(self, request):
@@ -53,7 +61,7 @@ class GamesView(ViewSet):
              game_type=game_type
          )
         serializer = CreateGameSerializer(game)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def update(self, request, pk):
         """PUT update"""
